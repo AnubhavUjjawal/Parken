@@ -1,0 +1,5 @@
+Hello, {{user}}, welcome to the Parken App. Please click on the activation key given below to acvtivate your account.
+
+http://{{site}}/accounts/activate/{{activation_key}}
+
+Happy Parking. (The parken team)
