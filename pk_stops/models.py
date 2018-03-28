@@ -11,5 +11,10 @@ class Organisation(models.Model):
 class Spot(models.Model):
 	org = models.ForeignKey(Organisation, on_delete=models.CASCADE)
 	is_booked = models.BooleanField(default=False)
-	booked_from = models.DateTimeField(auto_now=True)
+	booked_from = models.DateTimeField()
 	booked_till = models.DateTimeField()
+
+class Booking(models.Model):	
+	booked_by = models.ForeignKey(User, on_delete=models.CASCADE)
+	license_plate = models.CharField(max_length=20)
+	spot = models.ForeignKey(Spot, on_delete=models.CASCADE)

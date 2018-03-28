@@ -16,8 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include, url
+from pk_stops.views import Login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('pk_stops/', include('pk_stops.urls')),
+    path('login/', Login, name='login'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
 ]
