@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pk_stops.apps.PkStopsConfig',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -123,7 +124,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "static_files"),
 ]
 
 #custom-settings django-registration
@@ -135,3 +136,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'donotreplyfairshare@gmail.com'
 EMAIL_HOST_PASSWORD = 'holed.com'
+
+#graphene-settings
+GRAPHENE = {
+    'SCHEMA': 'server.schema.schema'
+}

@@ -18,9 +18,13 @@ from django.urls import path
 from django.conf.urls import include, url
 from pk_stops.views import Login
 
+from graphene_django.views import GraphQLView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pk_stops/', include('pk_stops.urls')),
     path('login/', Login, name='login'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
+    url(r'^graphql', GraphQLView.as_view(graphiql=True)),
+
 ]
