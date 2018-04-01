@@ -1,54 +1,121 @@
 import graphene
-from graphene import relay, ObjectType
+from graphene import relay, ObjectType, InputObjectType, ClientIDMutation
 from graphene_django.types import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
-from .models import Organisation, Spot, Booking, User
+from .models import Organisation, Spot, Booking, User, Client
+from .helper import update_create_instance
 
 
-class UserType(DjangoObjectType):
+class UserNode(DjangoObjectType):
 	class Meta:
 		model = User
 		filter_fields = ['username', 'email', 'organisation__name', 'organisation__id', 'organisation__rate']
 		interfaces = (relay.Node, )
 
 
-class OrganisationType(DjangoObjectType):
+class OrganisationNode(DjangoObjectType):
 	class Meta:
 		model = Organisation
-		filter_fields = ['org_user__username', 'name', 'rate', 'address']
+		filter_fields = ['org_user__username', 'name', 'rate', 'address', 'org_user__email']
 		interfaces = (relay.Node, )
 
-class SpotType(DjangoObjectType):
+
+class SpotNode(DjangoObjectType):
 	class Meta:
 		model = Spot
-		filter_fields = ['is_booked', 'booked_from', 'booked_till', 'spot_name', 'org__name', 'org__rate', 'org__address']
+		# filter_fields = [ 'spot_name', 'org__name', 'org__rate', 'org__address', 'booking__booked_till', 'booking__booked_from']
+		filter_fields = {
+			'spot_name' : ['exact'],
+			'org__name' : ['exact'],
+			'org__rate' : ['exact'],
+			'org__address': ['exact', 'icontains'],
+			'booking__booked_till': ['lte'],
+			'booking__booked_from': ['gte'],
+			'booking__booked_till_time': ['lte'],
+			'booking__booked_from_time': ['gte'],
+		}
 		interfaces = (relay.Node, )
 
-class BookingType(DjangoObjectType):
+
+class BookingNode(DjangoObjectType):
 	class Meta:
 		model = Booking
-		# filter_fields = ['is_booked', 'booked_from', 'booked_till', 'spot_name', 'org__name', 'org__rate', 'org__address']
-		# interfaces = (relay.Node, )
+		filter_fields = ['booked_by__username', 'booked_by__id', 'booked_from', 'booked_till', 'spot__org__name', 'spot__org__address', 'license_plate']
+		interfaces = (relay.Node, )
+
+
+class ClientNode(DjangoObjectType):
+	class Meta:
+		model = Client
+		filter_fields = ['name', 'age']
+		interfaces = (relay.Node, )
+
 
 class Query(object):
-	user = relay.Node.Field(UserType)
-	all_users = DjangoFilterConnectionField(UserType)
+	user = relay.Node.Field(UserNode)
+	all_users = DjangoFilterConnectionField(UserNode)
 
-	organisation = relay.Node.Field(OrganisationType)
-	all_organisations = DjangoFilterConnectionField(OrganisationType)
+	organisation = relay.Node.Field(OrganisationNode)
+	all_organisations = DjangoFilterConnectionField(OrganisationNode)
 
-	spot = relay.Node.Field(SpotType)
-	all_spots = DjangoFilterConnectionField(SpotType)
-	# all_organisations = graphene.List(OrganisationType)
-	# all_spots = graphene.List(SpotType)
-	# all_users = graphene.List(UserType)
-		
-	# def resolve_all_users(self, info, **kwargs):
-	# 	return User.objects.all()
+	spot = relay.Node.Field(SpotNode)
+	all_spots = DjangoFilterConnectionField(SpotNode)
 
-	# def resolve_all_organisations(self, info, **kwargs):
-	# 	return Organisation.objects.all()
+	booking = relay.Node.Field(BookingNode)
+	all_bookings = DjangoFilterConnectionField(BookingNode)
 
-	# def resolve_all_spots(self, info, **kwargs):
-	# 	return Spot.objects.select_related('org').all()
+	client = relay.Node.Field(ClientNode)
+	all_clients = DjangoFilterConnectionField(ClientNode)
+
+
+class CreateOrganisation(ClientIDMutation):
+	organisation = graphene.Field(OrganisationNode)
+	class Input:
+		name = graphene.String()
+		username = graphene.String()
+		rate = graphene.Float()
+		address = graphene.String()
+
+	@classmethod
+	def mutate_and_get_payload(cls, context, info, **input):
+		temp = Organisation(
+			name = input.get('name'),
+			org_user = User.objects.get(username = input.get('username')),
+			rate = input.get('rate'),
+			address = input.get('address')
+		)
+		temp.save()
+		return CreateOrganisation(organisation=temp)
+
+
+class CreateSpot(ClientIDMutation):
+	spot = graphene.Field(SpotNode)
+	class Input:
+		spot_name = graphene.String()
+		username = graphene.String()
+
+	@classmethod
+	def mutate_and_get_payload(cls, context, info, **input):
+		# print(**input)
+		temp = Spot(
+			spot_name = input.get('spot_name'),
+			org = Organisation.objects.get(
+					org_user = User.objects.get(username=input.get('username'))
+				)
+		)
+		temp.save()
+		return CreateSpot(spot=temp)	
+
+
+# class CreateBooking(ClientIDMutation):
+# 	booking = graphene.Field(CreateOrganisation)
+# 	class Input:
+# 		license_plate = graphene.String()
+# 		spot_
+
+class Mutation(graphene.ObjectType):
+	# create_client = CreateClient.Field()
+	create_organisation = CreateOrganisation.Field()
+	create_spot = CreateSpot.Field()	
+
