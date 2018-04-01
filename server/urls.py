@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include, url
 from pk_stops.views import Login
-
+from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_jwt.views import refresh_jwt_token
 from graphene_django.views import GraphQLView
 
 urlpatterns = [
@@ -25,6 +26,8 @@ urlpatterns = [
     path('pk_stops/', include('pk_stops.urls')),
     path('login/', Login.as_view(), name='login'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
+    url(r'^api-token-auth/', obtain_jwt_token),
+    url(r'^api-token-refresh/', refresh_jwt_token),
     url(r'^graphql', GraphQLView.as_view(graphiql=True)),
 
 ]
