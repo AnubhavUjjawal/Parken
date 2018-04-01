@@ -23,7 +23,7 @@ from graphene_django.views import GraphQLView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pk_stops/', include('pk_stops.urls')),
-    path('login/', Login, name='login'),
+    path('login/', Login.as_view(), name='login'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^graphql', GraphQLView.as_view(graphiql=True)),
 

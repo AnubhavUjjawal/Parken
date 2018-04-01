@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 
@@ -44,9 +44,10 @@ class Login(View):
 		user = authenticate(username=username, password=password)
 		if user is not None:
 			login(request, user)
-			return HttpResponseRedirect(reverse('pk_stops:main_page'))
+			return JsonResponse({"logged_in": 1})
 		
-		return render(request, self.template_name, context={ err: 'Invalid Username or  Password' })	
+		return JsonResponse({"logged_in": 0})
+		# return render(request, self.template_name, context={ err: 'Invalid Username or  Password' })	
 
 
 
