@@ -23,11 +23,11 @@ class Booking(models.Model):
 	booked_by = models.ForeignKey(User, on_delete=models.CASCADE)
 	license_plate = models.CharField(max_length=20)
 	spot = models.ForeignKey(Spot, related_name='booking', on_delete=models.CASCADE)
-	booked_from = models.DateField(blank=True, null=True)
-	booked_till = models.DateField(blank=True, null=True)
-	booked_from_time = models.TimeField(blank=True, null=True)
-	booked_till_time = models.TimeField(blank=True, null=True)
-
+	booked_from = models.DateTimeField(blank=True, null=True)
+	booked_till = models.DateTimeField(blank=True, null=True)
+	# booked_from_time = models.TimeField(blank=True, null=True)
+	# booked_till_time = models.TimeField(blank=True, null=True)
+	phone_no = models.CharField(max_length=20, null=True, blank=True)
 
 class Client(models.Model):
 	name = models.CharField(max_length=20)

@@ -30,10 +30,10 @@ class SpotNode(DjangoObjectType):
 			'org__name' : ['exact'],
 			'org__rate' : ['exact'],
 			'org__address': ['exact', 'icontains'],
-			'booking__booked_till': ['lte'],
-			'booking__booked_from': ['gte'],
-			'booking__booked_till_time': ['lte'],
-			'booking__booked_from_time': ['gte'],
+			'booking__booked_till': ['lte', 'gte'],
+			'booking__booked_from': ['gte', 'lte'],
+			# 'booking__booked_till_time': ['lte', 'gte'],
+			# 'booking__booked_from_time': ['gte', 'lte'],
 		}
 		interfaces = (relay.Node, )
 
