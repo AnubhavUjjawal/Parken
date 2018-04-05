@@ -99,8 +99,8 @@ class CreateSpot(ClientIDMutation):
 	def mutate_and_get_payload(cls, context, info, **input):
 		# print(**input)
 		temp = Spot(
-			spot_name = input.get('spot_name'),
-			org = Organisation.objects.get(
+					spot_name = input.get('spot_name'),
+					org = Organisation.objects.get(
 					org_user = User.objects.get(username=input.get('username'))
 				)
 		)
@@ -108,14 +108,35 @@ class CreateSpot(ClientIDMutation):
 		return CreateSpot(spot=temp)	
 
 
-# class CreateBooking(ClientIDMutation):
-# 	booking = graphene.Field(CreateOrganisation)
-# 	class Input:
-# 		license_plate = graphene.String()
-# 		spot_
+class CreateBooking(ClientIDMutation):
+	booking = graphene.Field(BookingNode)
+	class Input:
+		license_plate = graphene.String()
+		spot_name = graphene.String()
+		booked_from = graphene.DateTime()
+		booked_till = graphene.DateTime()
+		phone_no = graphene.String()
+		username = graphene.String()
+		name = graphene.String()
+
+	@classmethod
+	def mutate_and_get_payload(cls, context, info, **input):
+		temp = Booking(
+					license_plate = input.get('license_plate'),
+					spot = Spot.objects.get(spot_name=input.get('spot_name'),	
+								org = Organisation.objects.get(name=input.get('name'))
+							),
+					booked_from = input.get('booked_from'),
+					booked_till = input.get('booked_till'),
+					phone_no = input.get('phone_no'),
+					booked_by = User.objects.get(username=input.get('username')),
+				)
+		temp.save()
+		return CreateBooking(booking=temp)			
 
 class Mutation(graphene.ObjectType):
 	# create_client = CreateClient.Field()
 	create_organisation = CreateOrganisation.Field()
-	create_spot = CreateSpot.Field()	
+	create_spot = CreateSpot.Field()
+	create_booking = CreateBooking.Field()	
 

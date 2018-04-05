@@ -1,0 +1,22 @@
+mutation createBookingMutation($input: CreateBookingInput!) {
+  createBooking(input: $input) {
+    booking {
+      licensePlate
+      spot {
+        spotName
+        org {
+          name
+        }
+      }
+      bookedFrom
+      bookedTill
+      phoneNo
+      bookedBy {
+        username
+      }
+    }
+  }
+}
+
+
+{"input": {"licensePlate": "12345", "spotName": "1", "bookedFrom": "2018-03-03T11:00:00", "bookedTill": "2018-04-04T11:00:00", "phoneNo": "124568", "username": "shiva", "name": "ABC Company"}}
