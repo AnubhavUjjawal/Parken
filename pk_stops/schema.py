@@ -41,7 +41,7 @@ class SpotNode(DjangoObjectType):
 class BookingNode(DjangoObjectType):
 	class Meta:
 		model = Booking
-		filter_fields = ['booked_by__username', 'booked_by__id', 'booked_from', 'booked_till', 'spot__org__name', 'spot__org__address', 'license_plate']
+		filter_fields = ['booked_by__username', 'booked_by__id', 'booked_from', 'booked_till', 'spot__org__name', 'spot__org__address', 'license_plate', 'spot__spot_name']
 		interfaces = (relay.Node, )
 
 
