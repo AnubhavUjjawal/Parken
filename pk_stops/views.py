@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_list_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 
@@ -50,4 +50,12 @@ class Login(View):
 		# return render(request, self.template_name, context={ err: 'Invalid Username or  Password' })	
 
 
+def ExitSpot(request):
+	# print(request.GET)
+	license_plate = str(request.GET.get("license_plate"))
+	print(license_plate)
+	bookings = get_list_or_404(Booking, license_plate=license_plate)
+	for booking in bookings:
+		booking.delete()
+	return HttpResponse("success") 
 

@@ -30,6 +30,7 @@ class Booking(models.Model):
 	# booked_from_time = models.TimeField(blank=True, null=True)
 	# booked_till_time = models.TimeField(blank=True, null=True)
 	phone_no = models.CharField(max_length=20, null=True, blank=True)
+	exit = models.BooleanField(default=False)
 
 class Client(models.Model):
 	name = models.CharField(max_length=20)
