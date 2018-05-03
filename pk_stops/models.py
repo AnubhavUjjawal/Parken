@@ -6,6 +6,8 @@ class Organisation(models.Model):
 	name = models.CharField(max_length=50)
 	rate = models.FloatField(default=10)	#rate 10 RS per hour
 	address = models.CharField(max_length=1000)
+	lat = models.FloatField(default=13.0587)
+	lon = models.FloatField(default=80.2641)
 
 	def __str__(self):
 		return self.name

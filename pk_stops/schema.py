@@ -17,7 +17,7 @@ class UserNode(DjangoObjectType):
 class OrganisationNode(DjangoObjectType):
 	class Meta:
 		model = Organisation
-		filter_fields = ['org_user__username', 'name', 'rate', 'address', 'org_user__email']
+		filter_fields = ['org_user__username', 'name', 'rate', 'address', 'org_user__email', 'lat', 'lon']
 		interfaces = (relay.Node, )
 
 
@@ -83,7 +83,9 @@ class CreateOrganisation(ClientIDMutation):
 			name = input.get('name'),
 			org_user = User.objects.get(username = input.get('username')),
 			rate = input.get('rate'),
-			address = input.get('address')
+			address = input.get('address'),
+			lat = input.get('lat'),
+			lon = input.get('lon')
 		)
 		temp.save()
 		return CreateOrganisation(organisation=temp)
